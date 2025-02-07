@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh 'docker build -t fahmi-image .'
+                }
+            }
+        }
+
+        stage('Run') {
+            steps {
+                script {
+                    // Run the Docker container
+                    sh 'docker run -d -p 3000:3000 fahmi-image'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Here you could add test commands, for now it's just a placeholder
+                    echo "No tests yet"
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Clean up the Docker containers and images
+                    sh 'docker ps -q | xargs docker stop'
+                    sh 'docker ps -a -q | xargs docker rm'
+                    sh 'docker images -q | xargs docker rmi'
+                }
+            }
+        }
+    }
+}
+
